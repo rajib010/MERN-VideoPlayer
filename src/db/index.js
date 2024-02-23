@@ -10,7 +10,6 @@ const dbConnection = async function () {
 
     } catch (error) {
         console.log("Error in db connnection", error);
-        process.exit(1);
     }
 }
 
