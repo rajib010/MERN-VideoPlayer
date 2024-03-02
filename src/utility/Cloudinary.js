@@ -10,18 +10,33 @@ cloudinary.config({
 
 const uploadOnCloudinary = async (localFilepath) => {
     try {
-        if (!localFilepath) return null;
-        //upload the file on cloudinary
-        const response = await cloudinary.uploader.upload(localFilepath, {
-            resource_type: "auto"
-        })
+        if (!localFilepath) {
+            throw new ApiError(400, 'Avatar file is missing');
+        }
 
-        console.log("file uploaded into cloudinary", response.url);
-        return response
+        const response = await cloudinary.uploader.upload(localFilepath, {
+            resource_type: 'auto'
+        });
+
+        console.log('File uploaded to Cloudinary:', response.url);
+        return response;
     } catch (error) {
-        fs.unlinkSync(localFilepath)  //remove the locally saved temporary file as the upload operation gets failed
-        return null;
+        fs.unlinkSync(localFilepath); // Remove temporary file on upload failure
+        throw error; // Re-throw the error for proper handling
+    }
+};
+
+const deleteCloudinaryImage = async (publicId) => {
+    try {
+        if (!publicId) {
+            return; 
+        }
+
+        const response = await cloudinary.uploader.destroy(publicId);
+        console.log('Image deleted successfully:', response);
+    } catch (error) {
+        console.error('Error deleting image:', error);
     }
 }
 
-export { uploadOnCloudinary }
+export { uploadOnCloudinary, deleteCloudinaryImage }
