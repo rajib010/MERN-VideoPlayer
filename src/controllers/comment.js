@@ -1,6 +1,5 @@
 import { asyncHandler, ApiError, ApiResponse } from "../utility/index.js";
-import { Comment, Like, Video } from "../models/index.jsx";
-import { Jwt } from "jsonwebtoken";
+import { Comment, Like, Video } from "../models/index.js";
 import mongoose from "mongoose";
 
 
@@ -93,7 +92,7 @@ const addComment = asyncHandler(async (req, res) => {
     const comment = await Comment.create({
         content,
         video: videoId,
-        owner: req.user._id
+        owner: req.user?._id
     });
 
     if (!comment) {
