@@ -18,11 +18,13 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 //routes
-import userRouter from "./routes/user.js";
+import {userRouter, commentRouter} from "./routes/index.jsx";
+
 
 //routes declaration
 
-app.use("/api/v1/users",userRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/comment", commentRouter);
 
 
 
