@@ -18,13 +18,14 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 //routes
-import { userRouter, commentRouter, tweetRouter } from "./routes/index.js";
+import { userRouter, commentRouter, tweetRouter, videoRouter } from "./routes/index.js";
 
 
 //routes declaration
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/comment", commentRouter);
-app.use("api/v1/tweet", tweetRouter)
+app.use("/api/v1/tweet", tweetRouter);
+app.use("/api/v1/video", videoRouter)
 
 export { app }  

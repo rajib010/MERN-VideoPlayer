@@ -308,4 +308,32 @@ const deleteAVideo = asyncHandler(async (req, res) => {
 
 })
 
-export { getAllVideos, publishAVideo, getVideosById, updateAVideo }
+const togglePublishStatus = asyncHandler(async (req, res) => {
+    const { videoId } = req.params
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid video Id")
+    }
+    const video = await Video.findById(videoId)
+    if (!video) {
+        throw new ApiError(404, "video not found")
+    }
+    if (video?.owner.toString() !== req.user?._id.toString()) {
+        throw new ApiError(400, "Only owner can change the video status")
+    }
+    const videoToggle = await Video.findByIdAndUpdate(videoId,
+        {
+            $set: {
+                $isPublished: !video?.isPublished
+            }
+        },
+        {
+            new: true
+        })
+    if (!videoToggle) {
+        throw new ApiError(500, "Cannot toggle video status")
+    }
+
+    return res.status(200).json(new ApiResponse(200, videoToggle.isPublished, "Video status toggled successfully"))
+})
+
+export { getAllVideos, publishAVideo, getVideosById, updateAVideo, deleteAVideo, togglePublishStatus }
