@@ -1,6 +1,6 @@
 import { ApiError,ApiResponse, asyncHandler } from "../utility/index.js"
 import { User } from "../models/User.models.js"
-import { uploadOnCloudinary, deleteCloudinaryImage } from "../utility/Cloudinary.js"
+import { uploadOnCloudinary, deleteCloudinary } from "../utility/Cloudinary.js"
 import Jwt from "jsonwebtoken"
 import mongoose from "mongoose"
 
@@ -210,7 +210,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
         }
         user.avatar = uploadedAvatar.url;
         const updatedUser = await user.save();
-        deleteCloudinaryImage(user.avatar); // Delete the old avatar only after successful update
+        deleteCloudinary(user.avatar); // Delete the old avatar only after successful update
         res.status(200).json(
             new ApiResponse(200, updatedUser.toJSON({ select: '-password -refreshToken' }), 'Avatar updated successfully')
         );
@@ -232,7 +232,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
         }
         user.avatar = uploadedCoverImage.url;
         const updatedUser = await user.save();
-        deleteCloudinaryImage(user.avatar);
+        deleteCloudinary(user.avatar);
         res.status(200).json(
             new ApiResponse(200, updatedUser.toJSON({ select: '-password -refreshToken' }), 'CoverImage updated successfully')
         );
