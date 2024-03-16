@@ -5,7 +5,8 @@ import {videoRouter} from "./Video.js";
 import { likeRouter } from "./Like.js";
 import { playlistRouter } from "./Playlists.js";
 import { subscriptionRouter } from "./Subscription.js";
+import { dashboardRouter } from "./Dashboard.js";
 
 
 
-export {commentRouter, userRouter, tweetRouter, videoRouter, likeRouter, playlistRouter, subscriptionRouter}
+export {commentRouter, userRouter, tweetRouter, videoRouter, likeRouter, playlistRouter, subscriptionRouter, dashboardRouter}
