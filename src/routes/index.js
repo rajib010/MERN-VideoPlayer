@@ -3,7 +3,8 @@ import userRouter from "./User.js";
 import tweetRouter from "./Tweets.js";
 import {videoRouter} from "./Video.js";
 import { likeRouter } from "./Like.js";
+import { playlistRouter } from "./Playlists.js";
 
 
 
-export {commentRouter, userRouter, tweetRouter, videoRouter, likeRouter}
+export {commentRouter, userRouter, tweetRouter, videoRouter, likeRouter, playlistRouter}
