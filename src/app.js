@@ -18,7 +18,7 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 //routes
-import { userRouter, commentRouter, tweetRouter, videoRouter, likeRouter, playlistRouter } from "./routes/index.js";
+import { userRouter, commentRouter, tweetRouter, videoRouter, likeRouter, playlistRouter, subscriptionRouter } from "./routes/index.js";
 
 
 //routes declaration
@@ -28,7 +28,8 @@ app.use("/api/v1/comment", commentRouter);
 app.use("/api/v1/tweet", tweetRouter);
 app.use("/api/v1/video", videoRouter);
 app.use("/api/v1/likes",likeRouter);
-app.use("/api/v1/playlist", playlistRouter)
+app.use("/api/v1/playlist", playlistRouter);
+app.use("/api/v1/subscription", subscriptionRouter);
 
 
 export { app }  
