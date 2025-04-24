@@ -1,85 +1,83 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
-import Jwt from "jsonwebtoken"
+import { SignJWT } from "jose";
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     userName: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-        trim: true,
-        index: true //makes the field searchable, in an optimized way
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
     },
     email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-        trim: true,
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
     },
     fullName: {
-        type: String,
-        required: true,
-        trim: true,
-        index: true
+      type: String,
+      required: true,
+      trim: true,
+      index: true,
     },
     password: {
-        type: String,
-        required: [true, "Password is required"],
+      type: String,
+      required: [true, "Password is required"],
     },
     avatar: {
-        type: String, //cloudniary Url
-        required: true,
+      type: String, // Cloudinary URL
+      required: true,
     },
     coverImage: {
-        type: String
+      type: String,
     },
-    watchHistory: [{
+    watchHistory: [
+      {
         type: Schema.Types.ObjectId,
-        ref: "Video"
-    }],
+        ref: "Video",
+      },
+    ],
     refreshToken: {
-        type: String,
-    }
-},
-    { timestamps: true }
-)
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
 
-// not to use arrow function as it doesnot have this or current object reference
 userSchema.pre("save", async function (next) {
-    //only to hash the password only when password is modified
-    if (!this.isModified("password")) return next();
-    this.password = await bcrypt.hash(this.password, 10)
-    next()
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
-
-//create and post custom methods into schema
 userSchema.methods.isPasswordCorrect = async function (password) {
-    return await bcrypt.compare(password, this.password)
-}
+  return await bcrypt.compare(password, this.password);
+};
 
 userSchema.methods.generateAccessToken = async function () {
-    return await Jwt.sign({
-        _id: this._id,
-        email: this.email,
-        userName: this.userName,
-        fullName: this.fullName
-    }, process.env.ACCESS_TOKEN_SECRET,
-        {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-        }
-    )
-}
+  return await new SignJWT({
+    _id: this._id.toString(),
+    email: this.email,
+    userName: this.userName,
+    fullName: this.fullName,
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("1d")
+    .sign(new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET));
+};
 
 userSchema.methods.generateRefreshToken = async function () {
-    return await Jwt.sign({
-        _id: this._id
-    }, process.env.REFRESH_TOKEN_SECRET,
-        {
-            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
-        }
-    )
-}
-export const User = mongoose.model("User", userSchema)
+  return await new SignJWT({
+    _id: this._id.toString(),
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("7d")
+    .sign(new TextEncoder().encode(process.env.REFRESH_TOKEN_SECRET));
+};
+
+export const User = mongoose.model("User", userSchema);

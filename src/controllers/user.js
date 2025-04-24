@@ -86,7 +86,7 @@ const loginUser = asyncHandler(async (req, res) => {
     // generate access and refresh tokens
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
-    const loggedUser = User.findById(user._id).select("-password -refreshToken")
+    const loggedUser = await User.findById(user._id).select("-password -refreshToken")
 
     //    to send the cookies
     const options = {
